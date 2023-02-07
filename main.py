@@ -81,20 +81,25 @@ class CardHandler:
                 if link_imagem:
                     fotografo.download_img(self.nome, carta, link_imagem, n)
             else:
+                localizacao_cartas = f"{os.getcwd()}/{self.nome}"
                 # o padrão para os valores do objeto 'cartas_ja_existentes' é uma lista contendo as posições antigas das cartas, porque ele é gerado pelo método _buscar_imagens_localmente. Porém, caso, numa nova leitura do deck, mais cartas de uma mesma forem encontradas, é preciso duplicar o arquivo até que se tenha um número igual de arquivos e cartas.
                 if type(cartas_ja_existentes[carta]) == list:
-                    os.rename(
-                        f"{os.getcwd()}/{self.nome}/{cartas_ja_existentes[carta].pop()} - {carta}.jpg",
-                        f"{os.getcwd()}/{self.nome}/{n} - {carta}.jpg"
-                    )
+                    numero_carta = cartas_ja_existentes[carta].pop()
+                    try:
+                        os.rename(
+                            f"{localizacao_cartas}/{numero_carta} - {carta}.jpg",
+                            f"{localizacao_cartas}/{n} - {carta}.jpg"
+                        )
+                    except:
+                        pass
                     # quando a lista de posições de uma carta se esgota, substituímos a lista pela posição da última carta dessa que foi salva.
                     if not cartas_ja_existentes[carta]:
                         cartas_ja_existentes[carta] = n
                 else:
                     # entra nessa condição somente se o tipo do valor encontrado em cartas_ja_existentes[carta] não for uma lista, isto é, caso tenha passado pelo código logo acima, e o vetor tenha se esgotado. Nesse caso, o arquivo é duplicado, e o novo recebe o número adequado no começo do nome:
                     shutil.copy(
-                        f"{os.getcwd()}/{self.nome}/{cartas_ja_existentes[carta]} - {carta}.jpg",
-                        f"{os.getcwd()}/{self.nome}/{n} - {carta}.jpg"
+                        f"{localizacao_cartas}/{cartas_ja_existentes[carta]} - {carta}.jpg",
+                        f"{localizacao_cartas}/{n} - {carta}.jpg"
                     )
 
             n += 1
